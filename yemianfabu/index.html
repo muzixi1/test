@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匿名聊天室</title>
+    <style>
+        #chat-box {
+            height: 540px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            white-space: pre-line;
+        }
+
+        body {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .message .name {
+            font-weight: bold;
+        }
+
+        .message .content {
+            margin-top: 5px;
+        }
+
+        .message .time {
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="window.location.reload();">刷新</button>
+    <p id="onlineUsers">Loading...</p>
+    <div id="chat-box"></div>
+    <textarea id="message" placeholder="输入消息" rows="3"></textarea>
+    <button onclick="sendMessage()">发送</button>
+    <button onclick="promptDeletePassword()">清空聊天记录</button>
+
+
+    <script>
+        function sendMessage() {
+            var messageInput = document.getElementById('message');
+            var message = messageInput.value;
+
+            if (message.trim() === '') {
+                return;
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    messageInput.value = '';
+                    fetchMessages();
+                }
+            };
+            xhr.open('POST', 'save_message.php', true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.send('message=' + encodeURIComponent(message));
+        }
+
+        var hasScrolledToBottom = false;
+
+        function fetchMessages() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var chatBox = document.getElementById('chat-box');
+                    chatBox.innerHTML = xhr.responseText;
+
+                    if (!hasScrolledToBottom && chatBox.scrollHeight > 0) {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        hasScrolledToBottom = true;
+                    }
+                }
+            };
+            xhr.open('GET', 'get_messages.php', true);
+            xhr.send();
+        }
+
+        setInterval(fetchMessages, 10000);
+        fetchMessages();
+
+        document.getElementById('message').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function promptDeletePassword() {
+            var password = prompt('请输入删除密码:');
+            if (password === 'AI221') {
+                alert('聊天记录已删除');
+                clearChat();
+            } else {
+                alert('密码不正确，操作已取消。');
+            }
+        }
+
+        function clearChat() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    fetchMessages();
+                }
+            };
+            xhr.open('GET', 'clear_chat.php', true);
+            xhr.send();
+        }
+    </script>
+
+    <script>
+        function sendMessageAndRefresh() {
+            sendMessage();
+            window.location.reload();
+        }
+    </script>
+
+    <script>
+        function updateOnlineUsers() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("onlineUsers").innerHTML = "在线人数:" + xhr.responseText;
+                }
+            };
+            xhr.open("GET", "getOnlineUsers.php", true);
+            xhr.send();
+        }
+
+        updateOnlineUsers();
+        setInterval(updateOnlineUsers, 1000);
+    </script>
+
+</body>
+
+</html>

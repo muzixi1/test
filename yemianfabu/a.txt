@@ -1,0 +1,158 @@
+<strong>TyLtu:</strong> def get_line_value(filename, line_number):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+        if line_number <= len(lines):
+            line = lines[line_number-1]
+            value = line.split('. ')[-1].strip()  # 去除序列号
+            return value
+        else:
+            return None
+            
+def clear_file(filename):
+    with open(filename, 'w') as file:
+        file.truncate(0)
+
+def add_content_with_line_number(filename, content):
+    with open(filename, 'a+') as file:
+        lines = file.readlines()
+        line_number = len(lines) + 1
+        content_with_line_number = f"{line_number}. {content}\n"
+        file.write(content_with_line_number)
+
+def save_lines_to_file(filename, lines):
+    with open(filename, 'w') as file:
+        file.writelines(lines)
+
+def load_lines_from_file(filename):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+    return lines
+filename='cs.txt'
+while(1):
+	a=input('1.添加  2.查询 3.退出 4.删除')
+	if a=='1':
+		filename = 'cs.txt'  # 文件名
+		
+		# 读取已添加的数列
+		lines = load_lines_from_file(filename)
+		
+		# 打印已添加的数列
+		print("已添加的数列：")
+		for line in lines:
+		    print(line.strip())
+		
+		# 添加新的内容
+		content = input('请输入要添加的内容：')
+		add_content_with_line_number(filename, content)
+		
+		# 保存更新后的数列
+		lines.append(f"{len(lines)+1}. {content}\n")
+		save_lines_to_file(filename, lines)
+		f=open('cs.txt','r')
+		print(f.read())
+	elif a=='2':
+		filename = 'cs.txt'  # 文件名
+		f=open('cs.txt','r')
+		print(f.read())
+		line_number = int(input('请输入要索引的行号：'))
+		value = get_line_value(filename, line_number)
+		if value is not None:
+		    print(f"第 {line_number} 行的值为：{value}")
+		else:
+		    print("行号超出文件范围。")
+	elif a=='3':
+		break
+	elif a == '4':
+		clear_file(filename)
+		print("文件内容已删除") (2023-12-30 11:33:52)<br><strong>EJFUx:</strong> # 练习 1-1
+print("hello, world")
+
+# 练习 1-2
+print("""
+*     *    * * * *    *          *            * * *              * * *         * * * *
+*     *    *          *          *          *       *          *       *          *
+* * * *    * * * *    *          *         *         *        *         *         *
+*     *    *          *          *          *       *    **    *       *       *  *
+*     *    * * * *    * * * *    * * * *      * * *       *      * * *          * *
+""")
+
+# 练习 1-3
+print("I'm a student")
+
+# 练习 1-4
+name = input("请输入员工的姓名：")
+print(f'I said: "Life is short, {name} need Python"')
+
+# 练习 1-5
+friend_name = input("请输入朋友的名字：")
+print(f"{friend_name} happy birthday")
+
+# G 练习 1-7
+rmb = float(input("请输入人民币币值："))
+usd = rmb *6.7136
+print(f"{usd:.4f}")
+
+# 练习 1-8
+radius = float(input("请输入圆锥的底面半径："))
+height = float(input("请输入圆锥的高："))
+volume = 3.14 * radius * radius * height / 3
+print(f"{volume:.2f}")
+
+# 练习 1-9
+score1 = int(input("请输入西方文明文化史的成绩："))
+score2 = int(input("请输入行政管理学的成绩："))
+score3 = int(input("请输入大学计算机基础的成绩："))
+average_score = (score1 + score2 + score3) / 3
+print(f"学霸君的平均成绩是 {average_score:.0f}")
+
+# J 练习 1-10
+fahrenheit = float(input("请输入华氏温度："))
+celsius = (fahrenheit - 32) * 5 / 9
+print(f"摄氏温度为 {celsius:.1f}")
+
+# 练习 1-11
+armor = int(input("请输入护甲值："))
+damage_reduction = armor / (armor + 600) * 100
+print(f"免伤百分比为 {damage_reduction:.2f}%")
+
+# 练习 1-12
+age_xiaohan = int(input("请输入鹿小晗的年龄："))
+age_brother = age_xiaohan + 5
+age_mom = age_brother * 2 + 8
+age_grandpa = age_xiaohan * 6 - 5
+print(f"鹿小晗哥哥的年龄是 {age_brother}")
+print(f"鹿小晗妈妈的年龄是 {age_mom}")
+print(f"鹿小晗爷爷的年龄是 {age_grandpa}")
+
+# 练习 1-13
+total_expenditure = float(input("请输入个人消费支出总额："))
+food_expenditure = float(input("请输入食品支出总额："))
+engel_coefficient = (food_expenditure / total_expenditure) * 100
+print(f"The Engle's Coefficient is {engel_coefficient:.2f} %")
+
+# 练习 1-14
+
+# 获取三篇大作业的成绩和期末考试成绩
+score1 = float(input("请输入第一篇作业成绩："))
+score2 = float(input("请输入第二篇作业成绩："))
+score3 = float(input("请输入第三篇作业成绩："))
+final_score = float(input("请输入期末考试成绩："))
+
+a=score1*0.2
+b=score2*0.2
+c=score3*0.2
+d=a+b+c
+e=final_score*0.4
+print('总成绩为:%.2f' %(d+e))
+
+
+# 练习 1-15
+credit1 = float(input("请输入第一门课程的学分："))
+score1 = float(input("请输入第一门课程的成绩："))
+credit2 = float(input("请输入第二门课程的学分："))
+score2 = float(input("请输入第二门课程的成绩："))
+credit3 = float(input("请输入第三门课程的学分："))
+score3 = float(input("请输入第三门课程的成绩："))
+weighted_average = (credit1 * score1 + credit2 * score2 + credit3 * score3) / (credit1 + credit2 + credit3)
+print(f"小美的加权平均分是 {weighted_average:.4f}")
+ (2023-12-30 11:34:25)<br>

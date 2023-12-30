@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>显示文件内容</title>
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #fileContent {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            white-space: pre-line;
+        }
+
+        #refreshButton {
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #refreshButton:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .copyButton {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .copyButton:hover {
+            background-color: #218838;
+        }
+           body {
+      font-family: Arial, sans-serif; /* 设置整个页面的默认字体 */
+    }
+
+    #typewriter {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-family: 'Microsoft YaHei', sans-serif; /* 使用微软雅黑字体或根据需要更改 */
+      white-space: pre-wrap;
+      font-size: 24px; /* 调整字体大小 */
+      border-right: 2px solid black; /* 添加光标样式 */
+      padding-right: 8px; /* 调整光标位置 */
+    }
+  </style>
+  </style>
+    </style>
+</head>
+
+<body>
+<a href="http://zyj.1ao.top/nmlt">聊天室</a>
+
+    <button id="refreshButton">刷新</button>
+
+<div id="typewriter"></div>
+
+  <p id="onlineUsers">Loading...</p>
+    <div id="fileContent"></div>
+
+<script>
+        function getFileContent() {
+            var fileContentDiv = document.getElementById('fileContent');
+            var xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var lines = xhr.responseText.split('<br>');
+                        var reversedLines = lines.reverse(); // 倒序排列
+
+                        var formattedMessages = reversedLines.map(function (line) {
+                            var messageParts = line.split('</strong> ');
+                            var timestamp = messageParts[0];
+                            var message = messageParts[1];
+
+                            if (message) {
+                                // 去除时间部分
+                                var cleanMessage = message.trim().replace(timestamp, '');
+                                return '<div class="message">' + cleanMessage + '</div>'; // 包装内容
+                            }
+                            return ''; // 如果没有消息，则返回空字符串
+                        });
+
+                        fileContentDiv.innerHTML = formattedMessages.join(''); // 拼接消息
+                        addCopyButtons();
+                    }
+                }
+            };
+
+            xhr.open('GET', 'a.txt', true);
+            xhr.send();
+        }
+function addCopyButtons() {
+    var messages = document.querySelectorAll('.message');
+
+    messages.forEach(function (message) {
+        var copyButton = document.createElement('button');
+        copyButton.textContent = '复制';
+        copyButton.classList.add('copyButton');
+        copyButton.onclick = function () {
+            var messageContent = message.textContent;
+            copyText(messageContent);
+        };
+        
+        // Creating a divider element
+        var divider = document.createElement('hr'); // Creating a <hr> element for the divider
+        message.appendChild(divider); // Adding the divider before the copy button
+
+        message.appendChild(copyButton);
+    });
+}
+
+// Your existing JavaScript code here
+
+        function copyText(text) {
+            // Remove the last 10 characters
+            var textWithoutLast10Chars = text.slice(0, -24);
+
+            var textarea = document.createElement('textarea');
+            textarea.value = textWithoutLast10Chars;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('内容已复制');
+        }
+    
+
+
+
+        document.getElementById('refreshButton').addEventListener('click', function () {
+            getFileContent();
+        });
+
+        getFileContent();
+        setInterval(getFileContent, 5000); // 每5秒刷新一次
+    </script>
+
+    <script>
+        function updateOnlineUsers() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("onlineUsers").innerHTML = "在线人数:" + xhr.responseText;
+                }
+            };
+            xhr.open("GET", "getOnlineUsers.php", true);
+            xhr.send();
+        }
+
+        updateOnlineUsers();
+        setInterval(updateOnlineUsers, 1000);
+    </script>
+</body>
+<script>
+  const content = [
+    "弱水三千 只取一瓢",
+    "一花一世界 一草一菩提",
+    "我的征途是星辰大海",
+    '斯人若彩虹 遇上方知有',
+    '坐观垂钓者 徒有羡渔情',
+    '对酒当歌 人生几何',
+    '已识乾坤大，犹怜草木青',
+    '南风知我意',
+    // Add more content here if needed
+  ];
+
+  const typewriter = document.getElementById('typewriter');
+  let currentContentIndex = 0;
+
+  function splitText(text) {
+    const mid = Math.floor(text.length / 2); // 获取文本中间位置
+    const firstHalf = text.substring(0, mid); // 截取文本的前半部分
+    const secondHalf = text.substring(mid); // 截取文本的后半部分
+    const modifiedSecondHalf = secondHalf.replace(/\n/g, '\n                            '); // 在第二行前面添加五个空格
+return `${firstHalf}\n     ${modifiedSecondHalf}`; // 返回修改后的文本
+
+  }
+
+  function typeWriterEffect(text, index, speed) {
+    if (index < text.length) {
+      typewriter.textContent += text.charAt(index);
+      setTimeout(() => {
+        typeWriterEffect(text, index + 1, speed);
+      }, speed);
+    } else {
+      setTimeout(() => {
+        eraseText(text, speed, text.length - 1);
+      }, 1000); // Delay before erasing text
+    }
+  }
+
+  function eraseText(text, speed, index) {
+    if (index >= 0) {
+      typewriter.textContent = text.substring(0, index);
+      setTimeout(() => {
+        eraseText(text, speed, index - 1);
+      }, speed);
+    } else {
+      setTimeout(() => {
+        typewriter.textContent = '';
+        currentContentIndex = (currentContentIndex + 1) % content.length; // Move to the next content
+        startTyping();
+      }, 500); // Delay before starting next sentence
+    }
+  }
+
+  function startTyping() {
+    const nextContent = content[currentContentIndex];
+    const splittedText = splitText(nextContent); // 分割文本
+    typeWriterEffect(splittedText, 0, 100); // Adjust typing speed here (milliseconds)
+  }
+
+  startTyping();
+</script>
+
+
+
+</html>
